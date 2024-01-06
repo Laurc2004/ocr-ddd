@@ -1,0 +1,17 @@
+server:
+  port: 8500
+  servlet:
+    context-path: /api
+spring:
+  profiles:
+    active: dev
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+
+minio:
+  endpoint: ${minio.endpoint}
+  username: ${minio.username}
+  password: ${minio.password}
+  bucket: ${minio.bucket}
