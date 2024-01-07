@@ -1,7 +1,11 @@
 package com.lrc.ocr.exception;
 
 import com.lrc.ocr.enums.BaseError;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class ServiceException extends RuntimeException {
     /**
      * 错误码
