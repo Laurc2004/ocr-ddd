@@ -1,40 +1,26 @@
 package com.lrc.ocr.config;
 
 import com.lrc.ocr.exception.ServiceException;
+import com.lrc.ocr.prop.MinioProp;
 import io.minio.BucketExistsArgs;
 import io.minio.MinioClient;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.Resource;
+
 import static com.lrc.ocr.enums.BaseError.MINIO_ERROR;
+
 
 @Configuration
 @Data
 @Slf4j
 public class MinioConfig {
-    /**
-     * 节点url
-     */
-    @Value("${minio.endpoint}")
-    private String endpoint;
-    /**
-     * 用户名
-     */
-    @Value("${minio.username}")
-    private String username;
-    /**
-     * 密码
-     */
-    @Value("${minio.password}")
-    private String password;
-    /**
-     * 存储桶
-     */
-    @Value("${minio.bucket}")
-    private String bucket;
+
+    @Resource
+    private MinioProp minioProp;
 
     /**
      * 创建Minio对象
@@ -45,11 +31,11 @@ public class MinioConfig {
         MinioClient client = null;
         try {
             client = MinioClient.builder()
-                    .endpoint(endpoint)
-                    .credentials(username, password)
+                    .endpoint(minioProp.getEndpoint())
+                    .credentials(minioProp.getUsername(), minioProp.getPassword())
                     .build();
 
-            boolean isExist = client.bucketExists(BucketExistsArgs.builder().bucket(bucket).build());
+            boolean isExist = client.bucketExists(BucketExistsArgs.builder().bucket(minioProp.getBucket()).build());
             if (isExist) {
                 log.info("minio存储桶存在");  // 存储桶存在
             } else {
