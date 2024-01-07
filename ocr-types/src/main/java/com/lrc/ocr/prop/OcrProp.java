@@ -11,5 +11,5 @@ public class OcrProp {
     /**
      * 请求的第三方ocr服务url
      */
-    private String url;
+    private String url = "http://127.0.0.1:8888/ocr/";
 }
