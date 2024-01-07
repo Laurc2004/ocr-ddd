@@ -15,3 +15,5 @@ minio:
   username: ${minio.username}
   password: ${minio.password}
   bucket: ${minio.bucket}
+ocr:
+  url: ${ocr.url}
