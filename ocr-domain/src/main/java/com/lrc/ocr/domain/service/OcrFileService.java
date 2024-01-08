@@ -2,8 +2,9 @@ package com.lrc.ocr.domain.service;
 
 import com.lrc.ocr.domain.model.aggregate.ApiDataAggregate;
 import com.lrc.ocr.domain.model.aggregate.ApiResponseAggregate;
-import com.lrc.ocr.domain.service.utils.MinioUtil;
+
 import com.lrc.ocr.exception.ServiceException;
+import com.lrc.ocr.utils.MinioUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;

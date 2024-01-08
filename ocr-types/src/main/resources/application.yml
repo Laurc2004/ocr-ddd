@@ -17,3 +17,8 @@ minio:
   bucket: ${minio.bucket}
 ocr:
   url: ${ocr.url}
+wechat:
+  config:
+    app-id: ${wechat.config.app-id}
+    original-id: ${wechat.config.original-id}
+    token: ${wechat.config.token}

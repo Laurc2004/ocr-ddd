@@ -10,4 +10,6 @@ public final class HttpConstants {
     public static final String OCR_REQUEST_NAME = "imgUrl";
 
     public static final MediaType JSON_TYPE = MediaType.get("application/json;charset=utf-8");
+    public static final String  IMAGE_TYPE = "image";
+    public static final String  TEXT_TYPE = "text";
 }

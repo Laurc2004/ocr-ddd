@@ -63,6 +63,16 @@
                 <artifactId>okhttp</artifactId>
                 <version>4.9.3</version>
             </dependency>
+            <dependency>
+                <groupId>com.thoughtworks.xstream</groupId>
+                <artifactId>xstream</artifactId>
+                <version>1.4.10</version>
+            </dependency>
+            <dependency>
+                <groupId>dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>1.6.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

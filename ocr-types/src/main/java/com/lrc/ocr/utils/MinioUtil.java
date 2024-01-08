@@ -1,5 +1,4 @@
-package com.lrc.ocr.domain.service.utils;
-
+package com.lrc.ocr.utils;
 
 import com.lrc.ocr.exception.ServiceException;
 import com.lrc.ocr.prop.MinioProp;
