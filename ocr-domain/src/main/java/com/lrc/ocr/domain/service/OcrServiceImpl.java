@@ -3,6 +3,7 @@ package com.lrc.ocr.domain.service;
 import com.lrc.ocr.domain.model.aggregate.ApiDataAggregate;
 import com.lrc.ocr.domain.model.aggregate.ApiResponseAggregate;
 import com.lrc.ocr.domain.model.entity.OcrTextEntity;
+import com.lrc.ocr.domain.model.vo.OcrTextVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class OcrServiceImpl extends OcrTextService{
+public class OcrServiceImpl extends OcrFileService {
 
 
     /**
@@ -21,18 +22,40 @@ public class OcrServiceImpl extends OcrTextService{
      * @param file
      */
     @Override
-    public List<String> getText(MultipartFile file) {
-        // 获取生成唯一的名称
-        String onlyFileName = getOnlyFileName(file);
-        //上传 minio并返回链接
-        String imgUrl = uploadToMinio(file, onlyFileName);
-        log.info("上传的图片url为:{}", imgUrl);
+    public OcrTextVO getText(MultipartFile file) {
+        // 获取总的数据
+        List<ApiDataAggregate> aggregateList = getToal(file);
+        // 过滤并返回
+        List<String> textLists = getTextOnlyListByData(aggregateList);
 
-        //okhttp 请求Python的接口并进行处理
-        ApiResponseAggregate response = getResponse(imgUrl);
+        return new OcrTextVO(textLists);
+    }
 
-        // 返回
-        return getTextOnlyList(response);
+
+    /**
+     * 通过url仅获取文本
+     * @param reqUrl
+     * @return
+     */
+    @Override
+    public OcrTextVO getTextByUrl(String reqUrl) {
+        // 请求获取响应对象
+        List<ApiDataAggregate> apiDataAggregates = getTotalByUrl(reqUrl);
+        // 获取text
+        List<String> textLists = getTextOnlyListByData(apiDataAggregates);
+        return new OcrTextVO(textLists);
+    }
+
+    /**
+     * 通过响应聚合数据仅获取文本
+     * @param apiDataAggregates
+     * @return
+     */
+    private List<String> getTextOnlyListByData(List<ApiDataAggregate> apiDataAggregates) {
+        return apiDataAggregates.stream()
+                .map(ApiDataAggregate::getOcrText) // 使用map操作来提取文本
+                .map(OcrTextEntity::getText) // 如果getOcrText返回的是Optional或类似的包装类型，则需要这样提取文本
+                .collect(Collectors.toList());
     }
 
     /**

@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 public enum OcrErrorVO  {
 
     IMAGE_ERROR(100,"图片错误"),
-    MINIO_ERROR(101,"文件存储异常"),
+
     FILE_ERROR(102,"文件格式有误"),
     SQL_ERROR(103,"SQL异常"),
     ALREADY_EXISTS(104,"用户已存在"),

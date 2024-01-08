@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum BaseError {
     MINIO_ERROR(101,"文件存储异常"),
+
     PARAM_ERROR(501, "参数有误"),
     UNKNOWN_ERROR(404,"未知SQL异常"),
     SQL_ERROR(405,"SQL异常，信息为:");
