@@ -13,6 +13,7 @@ target/
 *.ipr
 **/src/main/resources/application-dev.yml
 **/src/main/resources/application-dev.ymal
+**/src/test/
 
 ### Eclipse ###
 .apt_generated

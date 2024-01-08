@@ -3,6 +3,9 @@ package com.lrc.ocr.domain.model.valobj;
 import com.lrc.ocr.enums.BaseError;
 import lombok.AllArgsConstructor;
 
+/**
+ * ocr业务异常枚举类
+ */
 @AllArgsConstructor
 public enum OcrErrorVO  {
 

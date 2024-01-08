@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// 自定义的反序列化器，用于将JSON数据解析为ApiDataAggregate对象
+/**
+ * 自定义的反序列化器，用于将JSON数据解析为ApiDataAggregate对象
+ */
 public class ApiDataAggregateDeserializer extends JsonDeserializer<ApiDataAggregate> {
     @Resource
     private ObjectMapper objectMapper;
