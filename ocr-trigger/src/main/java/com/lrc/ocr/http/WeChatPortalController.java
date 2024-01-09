@@ -13,8 +13,6 @@ import javax.annotation.Resource;
 @RequestMapping("/wechat/protal/{appid}")
 @Slf4j
 public class WeChatPortalController {
-    @Resource
-    private WeChatProp weChatProp;
 
     @Resource
     private IWeChatValidateService weChatValidateService;

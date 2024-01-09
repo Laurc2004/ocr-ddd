@@ -4,11 +4,26 @@ server:
     context-path: /api
 spring:
   profiles:
-    active: dev
+    active: build
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  redis:
+    host: ${spring.redis.host}
+    database: ${spring.redis.database}
+    password: ${spring.redis.password}
+    port: ${spring.redis.port}
+    timeout: 5000
 
+logging:
+  level:
+    root: INFO
+  file:
+    path: ./logs
+    name: ocr-ddd.log
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+    file: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
 
 minio:
   endpoint: ${minio.endpoint}

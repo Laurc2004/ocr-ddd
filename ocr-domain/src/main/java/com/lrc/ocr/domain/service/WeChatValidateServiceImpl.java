@@ -4,15 +4,22 @@ import com.lrc.ocr.constants.HttpConstants;
 import com.lrc.ocr.domain.model.entity.RequestMsgEntity;
 import com.lrc.ocr.domain.model.entity.ResponseMsgEntity;
 import com.lrc.ocr.domain.model.vo.OcrTextVO;
+import com.lrc.ocr.domain.service.manage.RedisLimiterManager;
 import com.lrc.ocr.prop.WeChatProp;
-import com.lrc.ocr.utils.sdk.SignatureUtil;
+import com.lrc.ocr.utils.ImageLinkValidator;
+import com.lrc.ocr.utils.SignatureUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadPoolExecutor;
+
+
 
 /**
  * 公众号验签
@@ -26,6 +33,16 @@ public class WeChatValidateServiceImpl implements IWeChatValidateService {
 
     @Resource
     private IOcrService ocrService;
+
+    @Resource
+    private ThreadPoolExecutor threadPoolExecutor;
+
+    @Resource
+    private RedisLimiterManager redisLimiterManager;
+
+    public static final String KEY = "OPENID_";
+
+    private Map<String,String> resultMap = new ConcurrentHashMap<>();
 
     /**
      * 验签
@@ -72,38 +89,90 @@ public class WeChatValidateServiceImpl implements IWeChatValidateService {
         String toUserName = requestMsgEntity.getToUserName();
         String msgType = requestMsgEntity.getMsgType();
         String picUrl = requestMsgEntity.getPicUrl();
-        // 对传入的信息进行校验，如果不是图片立刻停止响应
-        if (!msgType.equals(HttpConstants.IMAGE_TYPE) || StringUtils.isBlank(picUrl)){
-            // 返回封装结果
-            ResponseMsgEntity responseMsgEntity = new ResponseMsgEntity();
+        String content = requestMsgEntity.getContent();
 
-            responseMsgEntity.setFromUserName(toUserName);
-            responseMsgEntity.setToUserName(fromUserName);
-            responseMsgEntity.setMsgType(HttpConstants.TEXT_TYPE);
-            responseMsgEntity.setContent("发送图片给我即可进行ocr识别");
-            responseMsgEntity.setCreateTime(System.currentTimeMillis() / 1000L);
-            return responseMsgEntity;
+        // 校验是否为图片或文字
+        if (!msgType.equals(HttpConstants.IMAGE_TYPE) && !msgType.equals(HttpConstants.TEXT_TYPE)){
+            return createResponseMsgEntity(toUserName,fromUserName,"该类型消息暂不支持");
         }
 
-        // 调用url服务
-        OcrTextVO ocrText = ocrService.getTextByUrl(picUrl);
-        // 对字符串进行拼接
-        String content = String.join("\n", ocrText.getOcrTextList());
-//        StringBuilder builder = new StringBuilder();
-//        for (String text : ocrText.getOcrTextList()) {
-//            builder.append(text).append("\n");
-//        }
-//
-//        String content = builder.toString();
-        // 返回封装结果
-        ResponseMsgEntity responseMsgEntity = new ResponseMsgEntity();
+        if (!redisLimiterManager.doRateLimit(KEY + fromUserName)){
+            return createResponseMsgEntity(toUserName, fromUserName, "您发送太快");
+        }
 
+        if (msgType.equals(HttpConstants.TEXT_TYPE)){
+            if (!ImageLinkValidator.isImageLink(content)){
+                return createResponseMsgEntity(toUserName, fromUserName, "该文本不为图片链接");
+            }
+
+            return getOcrResult(fromUserName, toUserName, content);
+
+        }
+
+        if (msgType.equals(HttpConstants.IMAGE_TYPE)){
+            String reqContent = picUrl.trim();
+            return getOcrResult(fromUserName, toUserName, reqContent);
+        }
+
+
+        return createResponseMsgEntity(toUserName, fromUserName, "发生未知错误，请联系管理员");
+    }
+
+    /**
+     * 获取ocr处理的结果
+     * @param fromUserName
+     * @param toUserName
+     * @param content
+     * @return
+     */
+    @NotNull
+    private ResponseMsgEntity getOcrResult(String fromUserName, String toUserName, String content) {
+        String result = resultMap.computeIfAbsent(content, k -> {
+            doOcrTask(content);
+            return HttpConstants.NULL_RESULT;
+        });
+
+        if (HttpConstants.NULL_RESULT.equals(result)) {
+            return createResponseMsgEntity(toUserName, fromUserName, "正在调用服务进行ocr处理中，请在五秒内对我回复以下链接\n" + content.trim());
+        }
+
+        return createResponseMsgEntity(toUserName, fromUserName, result);
+    }
+
+    /**
+     * 异步调用
+     * @param reqContent
+     */
+
+    private void doOcrTask(String reqContent) {
+        threadPoolExecutor.execute(() ->{
+            try {
+                OcrTextVO ocrText = ocrService.getTextByUrl(reqContent);
+                String content = String.join("\n", ocrText.getOcrTextList());
+                resultMap.put(reqContent, content);
+            } catch (Exception e) {
+                log.error("OCR处理失败", e);
+                resultMap.put(reqContent, "OCR处理失败，请重试");
+            }
+        });
+    }
+
+    /**
+     * 创建微信消息响应对象
+     * @param toUserName
+     * @param fromUserName
+     * @param content
+     * @return
+     */
+
+    private ResponseMsgEntity createResponseMsgEntity(String toUserName, String fromUserName, String content) {
+        ResponseMsgEntity responseMsgEntity = new ResponseMsgEntity();
         responseMsgEntity.setFromUserName(toUserName);
         responseMsgEntity.setToUserName(fromUserName);
         responseMsgEntity.setMsgType(HttpConstants.TEXT_TYPE);
         responseMsgEntity.setContent(content);
         responseMsgEntity.setCreateTime(System.currentTimeMillis() / 1000L);
-
+        log.info("发送信息{}",responseMsgEntity);
         return responseMsgEntity;
     }
 

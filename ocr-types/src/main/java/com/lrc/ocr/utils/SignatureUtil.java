@@ -1,4 +1,4 @@
-package com.lrc.ocr.utils.sdk;
+package com.lrc.ocr.utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
