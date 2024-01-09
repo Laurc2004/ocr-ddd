@@ -12,8 +12,10 @@ target/
 *.iml
 *.ipr
 **/src/main/resources/application-dev.yml
+**/src/main/resources/application-build.yml
 **/src/main/resources/application-dev.ymal
 **/src/test/
+**/*.log
 
 ### Eclipse ###
 .apt_generated
