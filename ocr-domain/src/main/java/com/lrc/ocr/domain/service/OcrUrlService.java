@@ -9,13 +9,16 @@ import com.lrc.ocr.domain.model.vo.OcrTextVO;
 import com.lrc.ocr.exception.ServiceException;
 import com.lrc.ocr.prop.MinioProp;
 import com.lrc.ocr.prop.OcrProp;
+import com.lrc.ocr.utils.ImageLinkValidator;
 import okhttp3.*;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 
 import static com.lrc.ocr.domain.model.valobj.OcrErrorVO.HTTP_ERROR;
+import static com.lrc.ocr.domain.model.valobj.OcrErrorVO.URL_ERROR;
 
 public abstract class OcrUrlService implements IOcrService{
 
@@ -35,6 +38,12 @@ public abstract class OcrUrlService implements IOcrService{
      */
     @Override
     public List<ApiDataAggregate> getTotalByUrl(String reqUrl) {
+        if (StringUtils.isBlank(reqUrl)){
+            throw new ServiceException(URL_ERROR.getCode(), URL_ERROR.getMsg());
+        }
+        if (!ImageLinkValidator.isImageLink(reqUrl)){
+            throw new ServiceException(URL_ERROR.getCode(), URL_ERROR.getMsg());
+        }
         // 请求响应
         ApiResponseAggregate response = getResponse(reqUrl);
         // todo 存入数据库
