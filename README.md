@@ -10,7 +10,7 @@ Java在市面上mvc架构的项目较多，本项目打算一点一点扩大，�
 
 ## 软件架构  :wrench: 
 
-##### 软件架构说明
+### 软件架构说明
 
 本项目采用了领域驱动设计（Domain-Driven Design，简称DDD）架构，这是一种软件开发方法，它主张将实现重点放在项目的领域和领域逻辑上，并强调使用一种通用的的语言来描述这些领域逻辑。在DDD架构中，软件被划分为多个层次，主要包括表示层（UI层）、应用层（Application Layer）、领域层（Domain Layer）和基础设施层（Infrastructure Layer）。
 
