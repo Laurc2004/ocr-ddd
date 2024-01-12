@@ -1,16 +1,15 @@
 package com.lrc.ocr.domain.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lrc.ocr.constants.HttpConstants;
 import com.lrc.ocr.domain.model.aggregate.ApiDataAggregate;
 import com.lrc.ocr.domain.model.aggregate.ApiResponseAggregate;
 import com.lrc.ocr.domain.model.dto.OcrDTO;
 import com.lrc.ocr.domain.model.vo.OcrTextVO;
+import com.lrc.ocr.domain.ocrApi.OcrClient;
 import com.lrc.ocr.exception.ServiceException;
-import com.lrc.ocr.prop.MinioProp;
-import com.lrc.ocr.prop.OcrProp;
 import com.lrc.ocr.utils.ImageLinkValidator;
-import okhttp3.*;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
@@ -20,16 +19,23 @@ import java.util.List;
 import static com.lrc.ocr.domain.model.valobj.OcrErrorVO.HTTP_ERROR;
 import static com.lrc.ocr.domain.model.valobj.OcrErrorVO.URL_ERROR;
 
+
 public abstract class OcrUrlService implements IOcrService{
 
-    @Resource
-    private OkHttpClient okHttpClient;
+//    @Resource
+//    private OkHttpClient okHttpClient;
 
+
+//    @Resource
+//    private OcrProp ocrProp;
     @Resource
-    private OcrProp ocrProp;
+    private OcrClient ocrClient;
 
     @Resource
     private ObjectMapper objectMapper;
+
+    protected OcrUrlService() {
+    }
 
     /**
      * 通过url获取全部
@@ -66,21 +72,25 @@ public abstract class OcrUrlService implements IOcrService{
             OcrDTO ocrDTO = new OcrDTO(imgUrl);
 
             // Java对象转化为JSON字符串（“序列化”）
-            String json = objectMapper.writeValueAsString(ocrDTO);
+//            String json = objectMapper.writeValueAsString(ocrDTO);
 
-            // 创建JSON格式
-            RequestBody requestBody = RequestBody.create(json, HttpConstants.JSON_TYPE);
-            // 创建请求格式
-            Request request = new Request.Builder()
-                    .post(requestBody)
-                    .url(ocrProp.getUrl())
-                    .build();
+//            // 创建JSON格式
+//            RequestBody requestBody = RequestBody.create(json, HttpConstants.JSON_TYPE);
+//            // 创建请求格式
+//            Request request = new Request.Builder()
+//                    .post(requestBody)
+//                    .url(ocrProp.getUrl())
+//                    .build();
+//
+//            // 发送并接收响应
+//            Call call = okHttpClient.newCall(request);
+//            Response response = call.execute();
+//
+//            responseValues = responseToObject(response);
 
-            // 发送并接收响应
-            Call call = okHttpClient.newCall(request);
-            Response response = call.execute();
+            //该用OpenFegin调用
+            responseValues = ocrClient.getOcr(ocrDTO);
 
-            responseValues = responseToObject(response);
 
         } catch (Exception e) {
             throw new ServiceException(HTTP_ERROR.getCode(),HTTP_ERROR.getMsg());

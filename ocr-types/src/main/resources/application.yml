@@ -3,8 +3,10 @@ server:
   servlet:
     context-path: /api
 spring:
+  application:
+    name: ocr-ddd
   profiles:
-    active: build
+    active: dev
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -14,6 +16,14 @@ spring:
     password: ${spring.redis.password}
     port: ${spring.redis.port}
     timeout: 5000
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+
+feign:
+  okhttp:
+    enabled: true # 开启OKHttp功能
 
 logging:
   level:

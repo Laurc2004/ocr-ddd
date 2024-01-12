@@ -2,7 +2,6 @@ package com.lrc.ocr.domain.service;
 
 import com.lrc.ocr.domain.model.aggregate.ApiDataAggregate;
 import com.lrc.ocr.domain.model.aggregate.ApiResponseAggregate;
-
 import com.lrc.ocr.exception.ServiceException;
 import com.lrc.ocr.utils.MinioUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +13,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.lrc.ocr.domain.model.valobj.OcrErrorVO.*;
+import static com.lrc.ocr.domain.model.valobj.OcrErrorVO.FILE_ERROR;
+import static com.lrc.ocr.domain.model.valobj.OcrErrorVO.IMAGE_ERROR;
 
 @Slf4j
 public abstract class OcrFileService extends OcrUrlService {

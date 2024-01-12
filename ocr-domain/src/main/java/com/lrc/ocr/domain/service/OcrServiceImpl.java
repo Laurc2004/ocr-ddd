@@ -3,10 +3,7 @@ package com.lrc.ocr.domain.service;
 import com.lrc.ocr.domain.model.aggregate.ApiDataAggregate;
 import com.lrc.ocr.domain.model.aggregate.ApiResponseAggregate;
 import com.lrc.ocr.domain.model.entity.OcrTextEntity;
-import com.lrc.ocr.domain.model.valobj.OcrErrorVO;
 import com.lrc.ocr.domain.model.vo.OcrTextVO;
-import com.lrc.ocr.exception.ServiceException;
-import com.lrc.ocr.utils.ImageLinkValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,11 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.lrc.ocr.domain.model.valobj.OcrErrorVO.URL_ERROR;
-
 @Service
 @Slf4j
 public class OcrServiceImpl extends OcrFileService {
+
 
 
     /**
