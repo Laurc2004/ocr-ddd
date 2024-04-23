@@ -1,7 +1,6 @@
 package com.lrc.ocr.constants;
 
 import okhttp3.MediaType;
-import org.springframework.beans.factory.annotation.Value;
 
 public final class HttpConstants {
     /**
@@ -14,4 +13,6 @@ public final class HttpConstants {
     public static final String  TEXT_TYPE = "text";
 
     public static final String NULL_RESULT = "NULL";
+
+    public static final String SALT = "lrc";
 }

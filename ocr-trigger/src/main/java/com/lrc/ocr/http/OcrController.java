@@ -1,9 +1,9 @@
 package com.lrc.ocr.http;
 
-import com.lrc.ocr.domain.model.aggregate.ApiDataAggregate;
-import com.lrc.ocr.domain.model.vo.OcrTextVO;
-import com.lrc.ocr.domain.service.IOcrService;
-import com.lrc.ocr.http.dto.ReqUrlDTO;
+import com.lrc.ocr.domain.ocr.model.aggregate.ApiDataAggregate;
+import com.lrc.ocr.domain.ocr.model.dto.OcrDTO;
+import com.lrc.ocr.domain.ocr.model.vo.OcrTextVO;
+import com.lrc.ocr.domain.ocr.service.IOcrService;
 import com.lrc.ocr.model.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,25 +47,25 @@ public class OcrController {
 
     /**
      * 通过url或文件路径获取全部
-     * @param reqUrl
+     * @param ocrDTO
      * @return
      */
     @ApiOperation("通过url或文件路径获取全部")
     @PostMapping("/getTotalByUrl")
-    public Result<List<ApiDataAggregate>> getTotalByUrl(@RequestBody ReqUrlDTO reqUrl){
-        List<ApiDataAggregate> apiDataAggregate = ocrService.getTotalByUrl(reqUrl.getReqUrl());
+    public Result<List<ApiDataAggregate>> getTotalByUrl(@RequestBody OcrDTO ocrDTO){
+        List<ApiDataAggregate> apiDataAggregate = ocrService.getTotalByUrl(ocrDTO);
         return Result.success(apiDataAggregate);
     }
 
     /**
      * 通过url或文件路径获取文字
-     * @param reqUrl
+     * @param ocrDTO
      * @return
      */
     @ApiOperation("通过url或文件路径仅获取文字")
     @PostMapping("/getTextByUrl")
-    public Result<OcrTextVO> getTextByUrl(@RequestBody ReqUrlDTO reqUrl){
-        OcrTextVO ocrText = ocrService.getTextByUrl(reqUrl.getReqUrl());
+    public Result<OcrTextVO> getTextByUrl(@RequestBody OcrDTO ocrDTO){
+        OcrTextVO ocrText = ocrService.getTextByUrl(ocrDTO);
         return Result.success(ocrText);
     }
 
