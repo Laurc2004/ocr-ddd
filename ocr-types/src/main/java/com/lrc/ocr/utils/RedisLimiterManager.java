@@ -1,4 +1,4 @@
-package com.lrc.ocr.domain.service.manage;
+package com.lrc.ocr.utils;
 
 import org.redisson.api.RRateLimiter;
 import org.redisson.api.RateIntervalUnit;

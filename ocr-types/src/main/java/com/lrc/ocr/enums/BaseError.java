@@ -7,6 +7,8 @@ import lombok.Getter;
 @Getter
 public enum BaseError {
     MINIO_ERROR(101,"文件存储异常"),
+    IMAGE_ERROR(102,"图片错误"),
+    FILE_ERROR(103,"文件格式有误"),
     TOKEN_ERROR(201,"解析token异常"),
     LOGIN_USER_NOT_LOGIN_ERROR(202,"用户未登录"),
     CODE_ERROR(203,"验证码不正确"),

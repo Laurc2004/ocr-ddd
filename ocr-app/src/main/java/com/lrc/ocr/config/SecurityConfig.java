@@ -47,9 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // 对于登录接口 允许匿名访问
-                .antMatchers("/auth/**").anonymous()
+                .antMatchers("/auth/getAuth").anonymous()
                 // 对于这些接口 任何人都能访问
-                .antMatchers("/user/register","/wechat/protal/**").permitAll()
+                .antMatchers("/wechat/protal/**","/ocr/**").permitAll()
                 //放行swagger
                 .antMatchers("/doc.html","/swagger-resources/**","/webjars/**","/v2/**","/api/**").permitAll()
 

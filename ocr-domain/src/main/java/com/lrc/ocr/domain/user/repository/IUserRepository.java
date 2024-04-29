@@ -6,5 +6,7 @@ public interface IUserRepository {
     UserEntity queryUserByOpenid(String openid);
 
     void insert(UserEntity insertUser);
+
+    UserEntity getById(Long id);
 //    UserEntity getByUsername(String username);
 }

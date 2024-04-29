@@ -40,6 +40,13 @@ public class UserRepository implements IUserRepository {
                 .setOpenid(insertUser.getOpenid());
         userMapper.insert(user);
     }
+
+    @Override
+    public UserEntity getById(Long id) {
+        User user = userMapper.getById(id);
+
+        return new UserEntity(user.getId(), user.getOpenid(), user.getLines());
+    }
 //    @Override
 //    public UserEntity getByUsername(String username) {
 //        // 执行查找数据库操作

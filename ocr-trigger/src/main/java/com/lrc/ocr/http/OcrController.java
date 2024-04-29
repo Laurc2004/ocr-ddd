@@ -1,13 +1,15 @@
 package com.lrc.ocr.http;
 
-import com.lrc.ocr.domain.ocr.model.aggregate.ApiDataAggregate;
-import com.lrc.ocr.domain.ocr.model.dto.OcrDTO;
-import com.lrc.ocr.domain.ocr.model.vo.OcrTextVO;
+import com.lrc.ocr.domain.ocr.model.entity.OcrInputEntity;
+import com.lrc.ocr.domain.ocr.model.entity.factory.OcrInputFactory;
 import com.lrc.ocr.domain.ocr.service.IOcrService;
 import com.lrc.ocr.model.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -22,51 +24,32 @@ public class OcrController {
     private IOcrService ocrService;
 
     /**
-     * 上传文件获取文字
-     * @param file
-     * @return
+     *
+     * @param file 文件
+     * @param isAggregate 聚合对象还是纯文本
+     * @return List<聚合对象或纯文本>
      */
-    @ApiOperation("上传文件获取文字")
-    @PostMapping("/getText")
-    public Result<OcrTextVO> getTextOnlyByFile(@RequestPart("file") MultipartFile file){
-        OcrTextVO ocrText = ocrService.getText(file);
-        return Result.success(ocrText);
+    @ApiOperation("上传文件获取结果")
+    @PostMapping("/getByFile")
+    public Result<List<?>> getTextOnlyByFile(@RequestPart("file") MultipartFile file, boolean isAggregate){
+        OcrInputEntity fromFile = OcrInputFactory.createFromFile(file);
+        List<?> list = ocrService.processOcrAndFilter(fromFile, isAggregate);
+        return Result.success(list);
     }
 
-    /**
-     * 上传文件获取全部
-     * @param file
-     * @return
-     */
-    @ApiOperation("上传文件获取全部")
-    @PostMapping("/getToal")
-    public Result<List<ApiDataAggregate>> getTotalByFile(@RequestPart("file") MultipartFile file){
-        List<ApiDataAggregate> apiDataAggregate = ocrService.getToal(file);
-        return Result.success(apiDataAggregate);
-    }
 
     /**
-     * 通过url或文件路径获取全部
-     * @param ocrDTO
-     * @return
+     *
+     * @param url 图片链接
+     * @param isAggregate 聚合对象还是纯文本
+     * @return List<聚合对象或纯文本>
      */
-    @ApiOperation("通过url或文件路径获取全部")
+    @ApiOperation("通过url获取结果")
     @PostMapping("/getTotalByUrl")
-    public Result<List<ApiDataAggregate>> getTotalByUrl(@RequestBody OcrDTO ocrDTO){
-        List<ApiDataAggregate> apiDataAggregate = ocrService.getTotalByUrl(ocrDTO);
-        return Result.success(apiDataAggregate);
-    }
-
-    /**
-     * 通过url或文件路径获取文字
-     * @param ocrDTO
-     * @return
-     */
-    @ApiOperation("通过url或文件路径仅获取文字")
-    @PostMapping("/getTextByUrl")
-    public Result<OcrTextVO> getTextByUrl(@RequestBody OcrDTO ocrDTO){
-        OcrTextVO ocrText = ocrService.getTextByUrl(ocrDTO);
-        return Result.success(ocrText);
+    public Result<List<?>> getTotalByUrl(String url, boolean isAggregate){
+        OcrInputEntity fromUrl = OcrInputFactory.createFromUrl(url);
+        List<?> list = ocrService.processOcrAndFilter(fromUrl, isAggregate);
+        return Result.success(list);
     }
 
 }

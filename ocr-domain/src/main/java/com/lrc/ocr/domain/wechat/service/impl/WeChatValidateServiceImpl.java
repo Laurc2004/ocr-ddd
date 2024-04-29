@@ -2,8 +2,6 @@ package com.lrc.ocr.domain.wechat.service.impl;
 
 import com.lrc.ocr.constants.HttpConstants;
 import com.lrc.ocr.constants.RedisConstants;
-import com.lrc.ocr.domain.ocr.model.dto.OcrDTO;
-import com.lrc.ocr.domain.ocr.model.vo.OcrTextVO;
 import com.lrc.ocr.domain.ocr.service.IOcrService;
 import com.lrc.ocr.domain.wechat.model.entity.RequestMsgEntity;
 import com.lrc.ocr.domain.wechat.model.entity.ResponseMsgEntity;
@@ -13,7 +11,6 @@ import com.lrc.ocr.utils.SignatureUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -111,56 +108,6 @@ public class WeChatValidateServiceImpl implements IWeChatValidateService {
     }
 
     /**
-     * 获取OCR处理的结果
-     *
-     * @param fromUserName 发送消息的用户名
-     * @param toUserName   接收消息的用户名
-     * @param content      消息内容
-     * @return 返回响应消息实体
-     */
-    @NotNull
-    private ResponseMsgEntity getOcrResult(String fromUserName, String toUserName, String content) {
-        // 从Redis中获取结果
-        String result = redisTemplate.opsForValue().get(content);
-        if (result == null) {
-            // 如果在Redis中找不到结果，则执行OCR任务
-            doOcrTask(content);
-            result = HttpConstants.NULL_RESULT;
-        }
-
-        // 如果结果仍然为空，则返回正在处理的消息
-        if (HttpConstants.NULL_RESULT.equals(result)) {
-            return createResponseMsgEntity(toUserName, fromUserName, "正在调用服务进行ocr处理中，请在五分钟内对我回复以下链接\n" + content.trim());
-        }
-
-        // 返回处理结果
-        return createResponseMsgEntity(toUserName, fromUserName, result);
-    }
-
-    /**
-     * 异步执行OCR任务
-     *
-     * @param reqContent 请求内容
-     */
-    private void doOcrTask(String reqContent) {
-        threadPoolExecutor.execute(() -> {
-            try {
-                // 通过URL获取OCR文本
-                OcrTextVO ocrText = ocrService.getTextByUrl(new OcrDTO(reqContent));
-                String content = String.join("\n", ocrText.getOcrTextList());
-
-                // 将结果存储到Redis中，并设置5分钟的过期时间
-                redisTemplate.opsForValue().set(reqContent, content, 5, TimeUnit.MINUTES);
-            } catch (Exception e) {
-                log.error("OCR处理失败", e);
-
-                // 如果处理失败，将错误信息存储到Redis中，并设置5分钟的过期时间
-                redisTemplate.opsForValue().set(reqContent, "OCR处理失败，请重试", 5, TimeUnit.MINUTES);
-            }
-        });
-    }
-
-    /**
      * 创建微信消息响应对象
      *
      * @param toUserName   接收消息的用户名称
@@ -178,5 +125,57 @@ public class WeChatValidateServiceImpl implements IWeChatValidateService {
         log.info("发送信息{}", responseMsgEntity);
         return responseMsgEntity;
     }
+
+//    /**
+//     * 获取OCR处理的结果
+//     *
+//     * @param fromUserName 发送消息的用户名
+//     * @param toUserName   接收消息的用户名
+//     * @param content      消息内容
+//     * @return 返回响应消息实体
+//     */
+//    @NotNull
+//    private ResponseMsgEntity getOcrResult(String fromUserName, String toUserName, String content) {
+//        // 从Redis中获取结果
+//        String result = redisTemplate.opsForValue().get(content);
+//        if (result == null) {
+//            // 如果在Redis中找不到结果，则执行OCR任务
+//            doOcrTask(content);
+//            result = HttpConstants.NULL_RESULT;
+//        }
+//
+//        // 如果结果仍然为空，则返回正在处理的消息
+//        if (HttpConstants.NULL_RESULT.equals(result)) {
+//            return createResponseMsgEntity(toUserName, fromUserName, "正在调用服务进行ocr处理中，请在五分钟内对我回复以下链接\n" + content.trim());
+//        }
+//
+//        // 返回处理结果
+//        return createResponseMsgEntity(toUserName, fromUserName, result);
+//    }
+//
+//    /**
+//     * 异步执行OCR任务
+//     *
+//     * @param reqContent 请求内容
+//     */
+//    private void doOcrTask(String reqContent) {
+//        threadPoolExecutor.execute(() -> {
+//            try {
+//                // 通过URL获取OCR文本
+//                OcrTextVO ocrText = ocrService.getTextByUrl(new OcrDTO(reqContent));
+//                String content = String.join("\n", ocrText.getOcrTextList());
+//
+//                // 将结果存储到Redis中，并设置5分钟的过期时间
+//                redisTemplate.opsForValue().set(reqContent, content, 5, TimeUnit.MINUTES);
+//            } catch (Exception e) {
+//                log.error("OCR处理失败", e);
+//
+//                // 如果处理失败，将错误信息存储到Redis中，并设置5分钟的过期时间
+//                redisTemplate.opsForValue().set(reqContent, "OCR处理失败，请重试", 5, TimeUnit.MINUTES);
+//            }
+//        });
+//    }
+//
+
 
 }

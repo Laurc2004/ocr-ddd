@@ -4,6 +4,7 @@ import com.lrc.ocr.constants.RedisConstants;
 import com.lrc.ocr.domain.user.model.entity.LoginUserEntity;
 import com.lrc.ocr.domain.user.model.entity.UserEntity;
 import com.lrc.ocr.domain.user.model.vo.LoginUserVO;
+import com.lrc.ocr.domain.user.repository.IUserRepository;
 import com.lrc.ocr.domain.user.service.IUserService;
 import com.lrc.ocr.enums.BaseError;
 import com.lrc.ocr.exception.ServiceException;
@@ -15,6 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,6 +32,9 @@ public class UserServiceImpl implements IUserService {
     private AuthenticationManager authenticationManager;
     @Resource
     private RedisTemplate<String, String> redisTemplate;
+
+    @Resource
+    private IUserRepository userRepository;
 
     /**
      * 验证码登录校验
@@ -65,6 +70,24 @@ public class UserServiceImpl implements IUserService {
         String token = JwtUtil.createJWT(String.valueOf(id));
         destroyCode(code,openid);
         return new LoginUserVO(token);
+    }
+
+    @Override
+    public UserEntity getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof UsernamePasswordAuthenticationToken)) {
+            throw new ServiceException(BaseError.LOGIN_USER_NOT_LOGIN_ERROR);
+        }
+
+        UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) authentication;
+        Long id = Long.parseLong((String) auth.getPrincipal()); // 获取id
+
+        if (ObjectUtils.isEmpty(id)) {
+            throw new ServiceException(BaseError.LOGIN_USER_NOT_LOGIN_ERROR);
+        }
+
+        UserEntity userEntity = userRepository.getById(id);
+        return userEntity;
     }
 
     private void destroyCode(String code, String openid){
