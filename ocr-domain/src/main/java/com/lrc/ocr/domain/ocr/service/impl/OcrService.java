@@ -5,8 +5,8 @@ import com.lrc.ocr.domain.ocr.model.aggregate.ApiResponseAggregate;
 import com.lrc.ocr.domain.ocr.model.entity.OcrInputEntity;
 import com.lrc.ocr.domain.ocr.model.entity.OcrTextEntity;
 import com.lrc.ocr.domain.ocr.service.IOcrService;
-import com.lrc.ocr.domain.ocr.service.strategy.OcrStrategy;
 import com.lrc.ocr.domain.ocr.service.OcrStrategyFactory;
+import com.lrc.ocr.domain.ocr.service.strategy.OcrStrategy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -69,6 +69,7 @@ public abstract class OcrService implements IOcrService {
      * @param texts
      * @return
      */
+
     protected abstract List<String> filter(List<String> texts);
 
 

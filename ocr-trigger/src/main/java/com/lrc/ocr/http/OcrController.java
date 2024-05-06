@@ -2,6 +2,7 @@ package com.lrc.ocr.http;
 
 import com.lrc.ocr.domain.ocr.model.entity.OcrInputEntity;
 import com.lrc.ocr.domain.ocr.model.entity.factory.OcrInputFactory;
+import com.lrc.ocr.domain.ocr.service.FilterStrategyFactory;
 import com.lrc.ocr.domain.ocr.service.IOcrService;
 import com.lrc.ocr.model.Result;
 import io.swagger.annotations.Api;
@@ -21,7 +22,8 @@ import java.util.List;
 public class OcrController {
 
     @Resource
-    private IOcrService ocrService;
+    private FilterStrategyFactory filterStrategyFactory;
+
 
     /**
      *
@@ -31,8 +33,9 @@ public class OcrController {
      */
     @ApiOperation("上传文件获取结果")
     @PostMapping("/getByFile")
-    public Result<List<?>> getTextOnlyByFile(@RequestPart("file") MultipartFile file, boolean isAggregate){
+    public Result<List<?>> getTextOnlyByFile(@RequestPart("file") MultipartFile file, boolean isAggregate, String filterType){
         OcrInputEntity fromFile = OcrInputFactory.createFromFile(file);
+        IOcrService ocrService = filterStrategyFactory.createFilterStrategy(filterType);
         List<?> list = ocrService.processOcrAndFilter(fromFile, isAggregate);
         return Result.success(list);
     }
@@ -46,8 +49,9 @@ public class OcrController {
      */
     @ApiOperation("通过url获取结果")
     @PostMapping("/getTotalByUrl")
-    public Result<List<?>> getTotalByUrl(String url, boolean isAggregate){
+    public Result<List<?>> getTotalByUrl(String url, boolean isAggregate, String filterType){
         OcrInputEntity fromUrl = OcrInputFactory.createFromUrl(url);
+        IOcrService ocrService = filterStrategyFactory.createFilterStrategy(filterType);
         List<?> list = ocrService.processOcrAndFilter(fromUrl, isAggregate);
         return Result.success(list);
     }

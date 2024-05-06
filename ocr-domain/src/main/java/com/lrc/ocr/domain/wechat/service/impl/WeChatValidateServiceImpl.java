@@ -2,7 +2,6 @@ package com.lrc.ocr.domain.wechat.service.impl;
 
 import com.lrc.ocr.constants.HttpConstants;
 import com.lrc.ocr.constants.RedisConstants;
-import com.lrc.ocr.domain.ocr.service.IOcrService;
 import com.lrc.ocr.domain.wechat.model.entity.RequestMsgEntity;
 import com.lrc.ocr.domain.wechat.model.entity.ResponseMsgEntity;
 import com.lrc.ocr.domain.wechat.service.IWeChatValidateService;
@@ -15,7 +14,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 
@@ -29,12 +27,6 @@ public class WeChatValidateServiceImpl implements IWeChatValidateService {
 
     @Resource
     private WeChatProp weChatProp;
-
-    @Resource
-    private IOcrService ocrService;
-
-    @Resource
-    private ThreadPoolExecutor threadPoolExecutor;
 
     @Resource
     private RedisTemplate<String, String> redisTemplate;

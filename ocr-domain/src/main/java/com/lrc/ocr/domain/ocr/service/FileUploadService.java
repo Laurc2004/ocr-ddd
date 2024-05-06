@@ -2,7 +2,6 @@ package com.lrc.ocr.domain.ocr.service;
 
 import com.lrc.ocr.exception.ServiceException;
 import com.lrc.ocr.utils.MinioUtil;
-import com.lrc.ocr.utils.RedisLimiterManager;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,9 +18,6 @@ public class FileUploadService {
 
     @Resource
     private MinioUtil minioUtil;
-
-    @Resource
-    private RedisLimiterManager redisLimiterManager;
 
     /**
      * 上传文件转URL

@@ -17,8 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.lrc.ocr.enums.BaseError.TOKEN_ERROR;
-
 /**
  * token过滤器
  * 该过滤器放在user的过滤器之前
@@ -43,7 +41,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             Claims claims = JwtUtil.parseJWT(token);
             id = claims.getSubject();
         } catch (Exception e) {
-            throw new ServiceException(TOKEN_ERROR);
+            throw new ServiceException(BaseError.TOKEN_ERROR);
         }
 
         if (ObjectUtils.isEmpty(id)){

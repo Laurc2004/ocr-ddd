@@ -28,6 +28,8 @@ spring:
     nacos:
       discovery:
         server-addr: ${spring.cloud.nacos.discovery.server-addr}
+#        password: ${spring.cloud.nacos.discovery.password}
+#        username: ${spring.cloud.nacos.discovery.username}
 
 feign:
   okhttp:
