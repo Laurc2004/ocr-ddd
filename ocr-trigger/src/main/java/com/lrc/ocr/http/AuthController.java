@@ -5,6 +5,7 @@ import com.lrc.ocr.domain.user.model.vo.LoginUserVO;
 import com.lrc.ocr.domain.user.service.IUserService;
 import com.lrc.ocr.model.Result;
 import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -12,6 +13,7 @@ import javax.annotation.Resource;
 @RequestMapping("/auth")
 @RestController
 @Api(tags = "验证相关接口")
+@Slf4j
 public class AuthController {
 
     @Resource
@@ -19,6 +21,7 @@ public class AuthController {
 
     @PostMapping("/getAuth")
     public Result<LoginUserVO> getAuth(String code){
+        log.info("用户登录：{}",code);
         LoginUserVO loginUserVO = userService.login(code);
         return Result.success(loginUserVO);
     }
@@ -26,6 +29,7 @@ public class AuthController {
     @GetMapping("/getCurrentUser")
     public Result<UserEntity> getCurrentUser(){
         UserEntity userEntity = userService.getCurrentUser();
+        log.info("获取当前用户：{}",userEntity);
         return Result.success(userEntity);
     }
 }

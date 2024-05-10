@@ -18,6 +18,7 @@ public enum OcrErrorVO  {
     URL_ERROR(106,"图片URL异常"),
     USER_ERROR(201,"用户名或密码不能为空"),
     USER_LOGIN_ERROR(202,"用户名或密码错误"),
+    USER_LINE_ERROR(203,"用户余额不足"),
     ;
     private final Integer code; //编码：200成功，其它数字为失败
     private final String msg; //错误信息

@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 对于登录接口 允许匿名访问
                 .antMatchers("/auth/getAuth").anonymous()
                 // 对于这些接口 任何人都能访问
-                .antMatchers("/wechat/protal/**","/ocr/**").permitAll()
+                .antMatchers("/wechat/protal/**","/product/pay_notify").permitAll()
                 //放行swagger
                 .antMatchers("/doc.html","/swagger-resources/**","/webjars/**","/v2/**","/api/**").permitAll()
 

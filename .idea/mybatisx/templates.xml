@@ -16,7 +16,7 @@
             <option name="ignoreTablePrefix" value="" />
             <option name="ignoreTableSuffix" value="" />
             <option name="moduleName" value="ocr-infrastructure" />
-            <option name="modulePath" value="$PROJECT_DIR$" />
+            <option name="modulePath" value="$PROJECT_DIR$/ocr-infrastructure" />
             <option name="moduleUIInfoList">
               <list>
                 <ModuleInfoGo>
@@ -26,8 +26,8 @@
                   <option name="encoding" value="${domain.encoding}" />
                   <option name="fileName" value="${domain.fileName}Mapper" />
                   <option name="fileNameWithSuffix" value="${domain.fileName}Mapper.java" />
-                  <option name="modulePath" value="$PROJECT_DIR$" />
-                  <option name="packageName" value="com.lrc.ocr.dao" />
+                  <option name="modulePath" value="$PROJECT_DIR$/ocr-infrastructure" />
+                  <option name="packageName" value="${domain.basePackage}.mapper" />
                 </ModuleInfoGo>
                 <ModuleInfoGo>
                   <option name="basePath" value="src/main/resources" />
@@ -36,7 +36,7 @@
                   <option name="encoding" value="${domain.encoding}" />
                   <option name="fileName" value="${domain.fileName}Mapper" />
                   <option name="fileNameWithSuffix" value="${domain.fileName}Mapper.xml" />
-                  <option name="modulePath" value="$PROJECT_DIR$" />
+                  <option name="modulePath" value="$PROJECT_DIR$/ocr-infrastructure" />
                   <option name="packageName" value="mapper" />
                 </ModuleInfoGo>
               </list>
@@ -48,12 +48,12 @@
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="OcrResult" />
-                  <option name="tableName" value="ocr_result" />
+                  <option name="className" value="Product" />
+                  <option name="tableName" value="product" />
                 </TableUIInfo>
                 <TableUIInfo>
-                  <option name="className" value="User" />
-                  <option name="tableName" value="user" />
+                  <option name="className" value="Order" />
+                  <option name="tableName" value="order" />
                 </TableUIInfo>
               </list>
             </option>

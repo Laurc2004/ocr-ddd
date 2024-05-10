@@ -28,8 +28,8 @@ spring:
     nacos:
       discovery:
         server-addr: ${spring.cloud.nacos.discovery.server-addr}
-#        password: ${spring.cloud.nacos.discovery.password}
-#        username: ${spring.cloud.nacos.discovery.username}
+        password: ${spring.cloud.nacos.discovery.password}
+        username: ${spring.cloud.nacos.discovery.username}
 
 feign:
   okhttp:
@@ -57,6 +57,13 @@ wechat:
     app-id: ${wechat.config.app-id}
     original-id: ${wechat.config.original-id}
     token: ${wechat.config.token}
+  pay:
+    api-v3-key: ${wechat.pay.api-v3-key} # 证书解密的秘钥
+    private-key-file-path: ${wechat.pay.private-key-file-path} # 商户私钥文件
+    mch-id: ${wechat.pay.mch-id}
+    mch-serial-no: ${wechat.pay.mch-serial-no}  # 商户api证书的证书序列号
+    notify-url: ${wechat.pay.notify-url}  # 支付成功的回调地址
+    appid: ${wechat.pay.appid} #商家appid
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml

@@ -4,10 +4,16 @@ import com.lrc.ocr.domain.ocr.model.aggregate.ApiDataAggregate;
 import com.lrc.ocr.domain.ocr.model.aggregate.ApiResponseAggregate;
 import com.lrc.ocr.domain.ocr.model.entity.OcrInputEntity;
 import com.lrc.ocr.domain.ocr.model.entity.OcrTextEntity;
+import com.lrc.ocr.domain.ocr.model.entity.UserEntity;
+import com.lrc.ocr.domain.ocr.model.exception.OcrServiceException;
+import com.lrc.ocr.domain.ocr.model.valobj.OcrErrorVO;
+import com.lrc.ocr.domain.ocr.repository.IOcrRepository;
 import com.lrc.ocr.domain.ocr.service.IOcrService;
 import com.lrc.ocr.domain.ocr.service.OcrStrategyFactory;
 import com.lrc.ocr.domain.ocr.service.strategy.OcrStrategy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -17,6 +23,8 @@ import java.util.stream.Collectors;
 public abstract class OcrService implements IOcrService {
     @Resource
     private OcrStrategyFactory ocrStrategyFactory;
+    @Resource
+    private IOcrRepository ocrRepository;
 
     /**
      * 调用策略工厂判断输入的是URL还是文件
@@ -24,21 +32,39 @@ public abstract class OcrService implements IOcrService {
      * @param isAggregate
      * @return
      */
+    @Transactional
     public List<?> processOcrAndFilter(OcrInputEntity input, boolean isAggregate){
-        // 1.交给Ocr服务处理
+        // 校验额度
+        checkLines();
+        // 交给Ocr服务处理
         ApiResponseAggregate apiResponseAggregate = doOcrService(input);
         List<ApiDataAggregate> apiDataAggregates = apiResponseAggregate.getData().get(0);
-        // 2.返回要聚合数据还是文本
+        // 返回要聚合数据还是文本
         if (isAggregate){
             return apiDataAggregates;
         }
 
         List<String> textOnlyListByData = getTextOnlyListByData(apiDataAggregates);
-        // 3.如果返回是文本，通过什么过滤器去处理
+        // 如果返回是文本，通过什么过滤器去处理
         return filter(textOnlyListByData);
 
     }
 
+
+    /**
+     * 校验额度
+     */
+    private void checkLines(){
+        // 校验当前额度
+        String id = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity userEntity = ocrRepository.getById(Long.parseLong(id));
+        // 校验用户
+        if (userEntity == null || userEntity.getLines() <= 0) {
+            throw new OcrServiceException(OcrErrorVO.USER_LINE_ERROR);
+        }
+        UserEntity updateEntity = userEntity.setLines(userEntity.getLines() - 1);
+        ocrRepository.updateById(updateEntity);
+    }
 
 
     /**

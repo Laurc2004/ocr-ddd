@@ -12,4 +12,6 @@ public interface UserMapper {
     void insert(User user);
 
     User getById(Long id);
+
+    void updateById(User user);
 }
