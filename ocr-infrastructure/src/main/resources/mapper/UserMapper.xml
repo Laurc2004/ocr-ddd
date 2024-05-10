@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrc.ocr.dao.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.lrc.ocr.po.User">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="openid" column="openid" jdbcType="VARCHAR"/>
+            <result property="lines" column="lines" jdbcType="BIGINT"/>
+    </resultMap>
+    <insert id="insert">
+        insert into user (openid, `lines`) values (#{openid}, #{lines})
+    </insert>
+    <update id="updateById">
+        UPDATE user
+        <set>
+            <if test="lines != null">
+                `lines` = #{lines},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <select id="queryUserByOpenid" resultType="com.lrc.ocr.po.User">
+        select id, openid, `lines` from user where openid = #{openid}
+    </select>
+    <select id="getById" resultType="com.lrc.ocr.po.User">
+        select id, openid, `lines` from user where id = #{id}
+    </select>
+
+</mapper>

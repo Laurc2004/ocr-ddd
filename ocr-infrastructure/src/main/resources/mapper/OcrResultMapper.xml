@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrc.ocr.dao.OcrResultMapper">
+
+    <resultMap id="BaseResultMap" type="com.lrc.ocr.po.OcrResult">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="imageUrl" column="image_url" jdbcType="VARCHAR"/>
+            <result property="textResult" column="text_result" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,image_url,
+        text_result
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from ocr_result
+        where  id = #{id,jdbcType=BIGINT} 
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from ocr_result
+        where  id = #{id,jdbcType=BIGINT} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lrc.ocr.po.OcrResult" useGeneratedKeys="true">
+        insert into ocr_result
+        ( id,user_id,image_url
+        ,text_result)
+        values (#{id,jdbcType=BIGINT},#{userId,jdbcType=BIGINT},#{imageUrl,jdbcType=VARCHAR}
+        ,#{textResult,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lrc.ocr.po.OcrResult" useGeneratedKeys="true">
+        insert into ocr_result
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="userId != null">user_id,</if>
+                <if test="imageUrl != null">image_url,</if>
+                <if test="textResult != null">text_result,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id,jdbcType=BIGINT},</if>
+                <if test="userId != null">#{userId,jdbcType=BIGINT},</if>
+                <if test="imageUrl != null">#{imageUrl,jdbcType=VARCHAR},</if>
+                <if test="textResult != null">#{textResult,jdbcType=VARCHAR},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.lrc.ocr.po.OcrResult">
+        update ocr_result
+        <set>
+                <if test="userId != null">
+                    user_id = #{userId,jdbcType=BIGINT},
+                </if>
+                <if test="imageUrl != null">
+                    image_url = #{imageUrl,jdbcType=VARCHAR},
+                </if>
+                <if test="textResult != null">
+                    text_result = #{textResult,jdbcType=VARCHAR},
+                </if>
+        </set>
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.lrc.ocr.po.OcrResult">
+        update ocr_result
+        set 
+            user_id =  #{userId,jdbcType=BIGINT},
+            image_url =  #{imageUrl,jdbcType=VARCHAR},
+            text_result =  #{textResult,jdbcType=VARCHAR}
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+</mapper>

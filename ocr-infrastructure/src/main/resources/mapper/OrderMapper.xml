@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrc.ocr.dao.OrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.lrc.ocr.po.Order">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="openid" column="openid" jdbcType="VARCHAR"/>
+            <result property="productId" column="product_id" jdbcType="INTEGER"/>
+            <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+            <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
+            <result property="orderTime" column="order_time" jdbcType="TIMESTAMP"/>
+            <result property="orderStatus" column="order_status" jdbcType="TINYINT"/>
+            <result property="totalAmount" column="total_amount" jdbcType="DECIMAL"/>
+            <result property="payUrl" column="pay_url" jdbcType="VARCHAR"/>
+            <result property="payAmount" column="pay_amount" jdbcType="DECIMAL"/>
+            <result property="transactionId" column="transaction_id" jdbcType="VARCHAR"/>
+            <result property="payStatus" column="pay_status" jdbcType="TINYINT"/>
+            <result property="payTime" column="pay_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,openid,product_id,
+        product_name,order_id,order_time,
+        order_status,total_amount,pay_url,
+        pay_amount,transaction_id,pay_status,
+        pay_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from `order`
+        where  id = #{id,jdbcType=BIGINT} 
+    </select>
+    <select id="queryByOrderId" resultType="com.lrc.ocr.po.Order">
+        select id,openid,product_id,
+               product_name,order_id,order_time,
+               order_status,total_amount,pay_url,
+               pay_amount,transaction_id,pay_status,
+               pay_time
+        from `order`
+        where order_id = #{orderId}
+    </select>
+    <select id="queryOrder" resultType="com.lrc.ocr.po.Order">
+        select
+        <include refid="Base_Column_List" />
+        from `order`
+        where openid = #{openid}
+        and product_id = #{productId}
+        and order_status = #{orderStatus}
+        limit 1
+    </select>
+    <select id="queryTimeoutCloseOrderList" resultType="java.lang.String">
+        select order_id as orderId from `order`
+        where order_status = 0 and pay_status = 0 and now() >= order_time + interval 30 minute
+        order by id asc
+    </select>
+    <select id="queryReplenishmentOrder" resultType="java.lang.String">
+        select order_id as orderId from `order`
+        where order_status = 1 and pay_status = 1 and now() >= order_time + interval 3 minute
+        order by id asc
+    </select>
+    <select id="queryNoPayNotifyOrder" resultType="java.lang.String">
+        select order_id as orderId from `order`
+        where order_status = 0 and pay_status = 0 and now() >= order_time + interval 1 minute
+        order by id asc
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from `order`
+        where  id = #{id,jdbcType=BIGINT} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lrc.ocr.po.Order" useGeneratedKeys="true">
+        insert into `order`
+        ( id,openid,product_id
+        ,product_name,order_id,order_time
+        ,order_status,total_amount,pay_url
+        ,pay_amount,transaction_id,pay_status
+        ,pay_time)
+        values (#{id,jdbcType=BIGINT},#{openid,jdbcType=VARCHAR},#{productId,jdbcType=INTEGER}
+        ,#{productName,jdbcType=VARCHAR},#{orderId,jdbcType=VARCHAR},#{orderTime,jdbcType=TIMESTAMP}
+        ,#{orderStatus,jdbcType=TINYINT},#{totalAmount,jdbcType=DECIMAL},#{payUrl,jdbcType=VARCHAR}
+        ,#{payAmount,jdbcType=DECIMAL},#{transactionId,jdbcType=VARCHAR},#{payStatus,jdbcType=TINYINT}
+        ,#{payTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lrc.ocr.po.Order" useGeneratedKeys="true">
+        insert into `order`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="openid != null">openid,</if>
+                <if test="productId != null">product_id,</if>
+                <if test="productName != null">product_name,</if>
+                <if test="orderId != null">order_id,</if>
+                <if test="orderTime != null">order_time,</if>
+                <if test="orderStatus != null">order_status,</if>
+                <if test="totalAmount != null">total_amount,</if>
+                <if test="payUrl != null">pay_url,</if>
+                <if test="payAmount != null">pay_amount,</if>
+                <if test="transactionId != null">transaction_id,</if>
+                <if test="payStatus != null">pay_status,</if>
+                <if test="payTime != null">pay_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id,jdbcType=BIGINT},</if>
+                <if test="openid != null">#{openid,jdbcType=VARCHAR},</if>
+                <if test="productId != null">#{productId,jdbcType=INTEGER},</if>
+                <if test="productName != null">#{productName,jdbcType=VARCHAR},</if>
+                <if test="orderId != null">#{orderId,jdbcType=VARCHAR},</if>
+                <if test="orderTime != null">#{orderTime,jdbcType=TIMESTAMP},</if>
+                <if test="orderStatus != null">#{orderStatus,jdbcType=TINYINT},</if>
+                <if test="totalAmount != null">#{totalAmount,jdbcType=DECIMAL},</if>
+                <if test="payUrl != null">#{payUrl,jdbcType=VARCHAR},</if>
+                <if test="payAmount != null">#{payAmount,jdbcType=DECIMAL},</if>
+                <if test="transactionId != null">#{transactionId,jdbcType=VARCHAR},</if>
+                <if test="payStatus != null">#{payStatus,jdbcType=TINYINT},</if>
+                <if test="payTime != null">#{payTime,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.lrc.ocr.po.Order">
+        update `order`
+        <set>
+                <if test="openid != null">
+                    openid = #{openid,jdbcType=VARCHAR},
+                </if>
+                <if test="productId != null">
+                    product_id = #{productId,jdbcType=INTEGER},
+                </if>
+                <if test="productName != null">
+                    product_name = #{productName,jdbcType=VARCHAR},
+                </if>
+                <if test="orderId != null">
+                    order_id = #{orderId,jdbcType=VARCHAR},
+                </if>
+                <if test="orderTime != null">
+                    order_time = #{orderTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="orderStatus != null">
+                    order_status = #{orderStatus,jdbcType=TINYINT},
+                </if>
+                <if test="totalAmount != null">
+                    total_amount = #{totalAmount,jdbcType=DECIMAL},
+                </if>
+                <if test="payUrl != null">
+                    pay_url = #{payUrl,jdbcType=VARCHAR},
+                </if>
+                <if test="payAmount != null">
+                    pay_amount = #{payAmount,jdbcType=DECIMAL},
+                </if>
+                <if test="transactionId != null">
+                    transaction_id = #{transactionId,jdbcType=VARCHAR},
+                </if>
+                <if test="payStatus != null">
+                    pay_status = #{payStatus,jdbcType=TINYINT},
+                </if>
+                <if test="payTime != null">
+                    pay_time = #{payTime,jdbcType=TIMESTAMP},
+                </if>
+        </set>
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.lrc.ocr.po.Order">
+        update `order`
+        set 
+            openid =  #{openid,jdbcType=VARCHAR},
+            product_id =  #{productId,jdbcType=INTEGER},
+            product_name =  #{productName,jdbcType=VARCHAR},
+            order_id =  #{orderId,jdbcType=VARCHAR},
+            order_time =  #{orderTime,jdbcType=TIMESTAMP},
+            order_status =  #{orderStatus,jdbcType=TINYINT},
+            total_amount =  #{totalAmount,jdbcType=DECIMAL},
+            pay_url =  #{payUrl,jdbcType=VARCHAR},
+            pay_amount =  #{payAmount,jdbcType=DECIMAL},
+            transaction_id =  #{transactionId,jdbcType=VARCHAR},
+            pay_status =  #{payStatus,jdbcType=TINYINT},
+            pay_time =  #{payTime,jdbcType=TIMESTAMP}
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateOrderPayInfo">
+        update `order`
+        <set>
+            <if test="productId != null">
+                product_id = #{productId,jdbcType=INTEGER},
+            </if>
+            <if test="productName != null">
+                product_name = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="orderTime != null">
+                order_time = #{orderTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderStatus != null">
+                order_status = #{orderStatus,jdbcType=TINYINT},
+            </if>
+            <if test="totalAmount != null">
+                total_amount = #{totalAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="payUrl != null">
+                pay_url = #{payUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="payAmount != null">
+                pay_amount = #{payAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="transactionId != null">
+                transaction_id = #{transactionId,jdbcType=VARCHAR},
+            </if>
+            <if test="payStatus != null">
+                pay_status = #{payStatus,jdbcType=TINYINT},
+            </if>
+        </set>
+        where openid = #{openid,jdbcType=VARCHAR} and order_id = #{orderId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateOrderClose">
+        update `order` set
+        order_status = #{orderStatus}, pay_status = #{payStatus}
+        where order_id = #{orderId} and pay_status = 0
+    </update>
+</mapper>

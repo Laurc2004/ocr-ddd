@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrc.ocr.dao.ProductMapper">
+
+    <resultMap id="BaseResultMap" type="com.lrc.ocr.po.Product">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="productId" column="product_id" jdbcType="INTEGER"/>
+            <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+            <result property="productDesc" column="product_desc" jdbcType="VARCHAR"/>
+            <result property="quota" column="quota" jdbcType="INTEGER"/>
+            <result property="price" column="price" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,product_id,product_name,
+        product_desc,quota,price
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from product
+        where  id = #{id,jdbcType=BIGINT} 
+    </select>
+    <select id="queryQuota" resultType="java.lang.Integer">
+        select quota from product where product_id = #{productId}
+    </select>
+    <select id="selectAll" resultType="com.lrc.ocr.po.Product">
+        select
+        <include refid="Base_Column_List" />
+        from product
+    </select>
+    <select id="queryByProductId" resultType="com.lrc.ocr.po.Product">
+        select
+        <include refid="Base_Column_List" />
+        from product
+        where product_id = #{productId}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from product
+        where  id = #{id,jdbcType=BIGINT} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lrc.ocr.po.Product" useGeneratedKeys="true">
+        insert into product
+        ( id,product_id,product_name
+        ,product_desc,quota,price
+        )
+        values (#{id,jdbcType=BIGINT},#{productId,jdbcType=INTEGER},#{productName,jdbcType=VARCHAR}
+        ,#{productDesc,jdbcType=VARCHAR},#{quota,jdbcType=INTEGER},#{price,jdbcType=DECIMAL}
+        )
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lrc.ocr.po.Product" useGeneratedKeys="true">
+        insert into product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="productId != null">product_id,</if>
+                <if test="productName != null">product_name,</if>
+                <if test="productDesc != null">product_desc,</if>
+                <if test="quota != null">quota,</if>
+                <if test="price != null">price,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id,jdbcType=BIGINT},</if>
+                <if test="productId != null">#{productId,jdbcType=INTEGER},</if>
+                <if test="productName != null">#{productName,jdbcType=VARCHAR},</if>
+                <if test="productDesc != null">#{productDesc,jdbcType=VARCHAR},</if>
+                <if test="quota != null">#{quota,jdbcType=INTEGER},</if>
+                <if test="price != null">#{price,jdbcType=DECIMAL},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.lrc.ocr.po.Product">
+        update product
+        <set>
+                <if test="productId != null">
+                    product_id = #{productId,jdbcType=INTEGER},
+                </if>
+                <if test="productName != null">
+                    product_name = #{productName,jdbcType=VARCHAR},
+                </if>
+                <if test="productDesc != null">
+                    product_desc = #{productDesc,jdbcType=VARCHAR},
+                </if>
+                <if test="quota != null">
+                    quota = #{quota,jdbcType=INTEGER},
+                </if>
+                <if test="price != null">
+                    price = #{price,jdbcType=DECIMAL},
+                </if>
+        </set>
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.lrc.ocr.po.Product">
+        update product
+        set 
+            product_id =  #{productId,jdbcType=INTEGER},
+            product_name =  #{productName,jdbcType=VARCHAR},
+            product_desc =  #{productDesc,jdbcType=VARCHAR},
+            quota =  #{quota,jdbcType=INTEGER},
+            price =  #{price,jdbcType=DECIMAL}
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+</mapper>
