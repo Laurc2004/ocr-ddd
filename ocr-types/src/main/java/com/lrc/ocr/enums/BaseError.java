@@ -15,6 +15,7 @@ public enum BaseError {
     LOGIN_ERROR(204,"用户登录异常"),
 
     PARAM_ERROR(501, "参数有误"),
+    SERVICE_BUSY_ERROR(502, "服务繁忙，请稍等"),
     UNKNOWN_ERROR(404,"未知SQL异常"),
     SQL_ERROR(405,"SQL异常，信息为:");
     private final Integer code; //编码：200成功，其它数字为失败

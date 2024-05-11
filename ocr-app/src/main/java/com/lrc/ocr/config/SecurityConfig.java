@@ -52,6 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/wechat/protal/**","/product/pay_notify").permitAll()
                 //放行swagger
                 .antMatchers("/doc.html","/swagger-resources/**","/webjars/**","/v2/**","/api/**").permitAll()
+                // 添加Sentinel监控端点的放行规则
+                .antMatchers("/actuator/sentinel/**").permitAll()
+                .antMatchers("/metric").permitAll()
 
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();

@@ -28,10 +28,32 @@ spring:
     nacos:
       discovery:
         server-addr: ${spring.cloud.nacos.discovery.server-addr}
-        password: ${spring.cloud.nacos.discovery.password}
-        username: ${spring.cloud.nacos.discovery.username}
+#        password: ${spring.cloud.nacos.discovery.password}
+#        username: ${spring.cloud.nacos.discovery.username}
+    sentinel:
+      enabled: true # 是否开启。默认为 true 开启
+      eager: true # 是否饥饿加载。默认为 false 关闭
+      transport:
+        dashboard: ${spring.cloud.sentinel.transport.dashboard}
+        port: ${spring.cloud.sentinel.transport.port}
+        clientIp: ${spring.cloud.sentinel.transport.clientIp}
+      filter:
+        url-patterns: /**
+      log:
+        dir: ./logs
+
+management:
+  endpoint:
+    sentinel:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
 
 feign:
+  sentinel:
+    enabled: true
   okhttp:
     enabled: true # 开启OKHttp功能
 
