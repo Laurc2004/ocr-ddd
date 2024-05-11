@@ -1,18 +1,24 @@
-# 使用基础镜像 paddlecloud/paddleocr:2.6-cpu-latest
+# 使用基础镜像
 FROM paddlecloud/paddleocr:2.6-cpu-latest
 
 # 设置工作目录
-WORKDIR /data
+WORKDIR /app
 
-# 安装 paddleocr 和 flask，使用国内镜像源加快速度
-RUN pip install "paddleocr ==2.6.1.0" -i https://mirror.baidu.com/pypi/simple && \
-    pip install flask -i https://pypi.tuna.tsinghua.edu.cn/simple
+# 安装必要的包，使用国内镜像源加速安装
+RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple \
+    paddleocr==2.6.1.0 \
+    Flask \
+    requests
 
-# 创建存放 web-python 文件的目录
-RUN mkdir -p /data/web-python
+# 将当前目录下的所有文件复制到容器的/app目录下
+COPY . /app
 
-# 将本地的 ocr.py 复制到容器的 /data/web-python 目录下
-COPY ./ocr.py /data/web-python
+# 定义环境变量 替换成你们自己的
+ENV IP_ADDRESS=117.72.12.136
+ENV PORT=8085
+ENV NACOS_IP=127.0.0.1
+ENV NACOS_PORT=8848
+ENV SERVICE_NAME=ocr-service
 
-# 指定启动命令，运行 ocr.py 脚本
-CMD ["python3", "/data/web-python/ocr.py"]
+# 指定启动命令
+CMD ["python3", "./ocr_nacos.py"]
