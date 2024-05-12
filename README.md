@@ -88,7 +88,7 @@
 
 ## 📖 安装部署教程 :book:
 
-- **GitHub**：[1.0.0简易版教程](https://github.com/Laurc2004/ocr-ddd/wiki/%E5%AE%89%E8%A3%85%E5%92%8C%E8%BF%90%E8%A1%8C%E6%95%99%E7%A8%8B(1.0.0%E7%AE%80%E6%98%93%E7%89%88))
-- **Gitee**：[1.0.0简易版教程](https://gitee.com/liu-ruichao/ocr-ddd/wikis/安装和运行教程(1.0.0简易版))
+[1.0.0简易版教程](https://github.com/Laurc2004/ocr-ddd/wiki/%E5%AE%89%E8%A3%85%E5%92%8C%E8%BF%90%E8%A1%8C%E6%95%99%E7%A8%8B(1.0.0%E7%AE%80%E6%98%93%E7%89%88))
+[2.0.0微服务版教程](https://github.com/Laurc2004/ocr-ddd/wiki/%E5%AE%89%E8%A3%85%E5%92%8C%E8%BF%90%E8%A1%8C%E6%95%99%E7%A8%8B(2.0.0%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%89%88))
 
 欢迎Star🌟 和Fork该项目，您的反馈与贡献是我们不断进步的动力！
