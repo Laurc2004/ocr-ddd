@@ -66,7 +66,7 @@
 
 ### Java & 中间件
 
-- **Spring生态**：Spring Boot, MVC, Security, Data JPA
+- **Spring生态**：Spring Boot, MVC, Security
 - **网络与数据**：Okhttp, Jackson, Mybatis, MySQL, Redis
 - **API管理与文档**：Knife4j
 - **开发辅助**：Lombok
