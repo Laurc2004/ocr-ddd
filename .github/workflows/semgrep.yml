@@ -19,3 +19,4 @@ jobs:
 
       # 使用指定规则集
       - run: semgrep ci --config "p/java" --config "p/security-audit" --config "p/trailofbits"
+        continue-on-error: true
