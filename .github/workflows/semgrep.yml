@@ -2,9 +2,9 @@ name: Semgrep Java Code Scan
 
 on:
   push:
-    branches: [ master-cloud ]
+    branches: [master-cloud]
   pull_request:
-    branches: [ master-cloud ]
+    branches: [master-cloud]
 
 jobs:
   semgrep-scan:
