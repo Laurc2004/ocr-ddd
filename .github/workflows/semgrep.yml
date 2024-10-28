@@ -7,27 +7,15 @@ on:
     branches: [master-cloud]
 
 jobs:
-  semgrep-scan:
+  semgrep:
+    name: semgrep/ci
     runs-on: ubuntu-latest
 
+    container:
+      image: semgrep/semgrep
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install Semgrep
-        run: pip install semgrep
-
-      # 使用多种官方规则库扫描 Java 代码
-      - name: Run Semgrep with Java Official Rules
-        run: |
-          semgrep --config "p/java" \
-                  --config "p/security-audit" .
-
-      # 使用 Trail of Bits 规则库扫描
-      - name: Run Semgrep with Trail of Bits Rules for Java
-        run: semgrep --config "p/trailofbits" .
+      # 使用指定规则集
+      - run: semgrep ci --config "p/java" --config "p/security-audit" --config "p/trailofbits"
