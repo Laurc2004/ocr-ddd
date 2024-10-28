@@ -1,0 +1,33 @@
+name: Semgrep Java Code Scan
+
+on:
+  push:
+    branches: [ master-cloud ]
+  pull_request:
+    branches: [ master-cloud ]
+
+jobs:
+  semgrep-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install Semgrep
+        run: pip install semgrep
+
+      # 使用多种官方规则库扫描 Java 代码
+      - name: Run Semgrep with Java Official Rules
+        run: |
+          semgrep --config "p/java" \
+                  --config "p/security-audit" .
+
+      # 使用 Trail of Bits 规则库扫描
+      - name: Run Semgrep with Trail of Bits Rules for Java
+        run: semgrep --config "p/trailofbits" .
