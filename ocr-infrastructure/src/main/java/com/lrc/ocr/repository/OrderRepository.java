@@ -51,15 +51,20 @@ public class OrderRepository implements IOrderRepository {
     public boolean changeOrderPaySuccess(String orderId, String transactionId, BigDecimal totalAmount, Date date) {
         // 查询更新
         Order order = orderMapper.queryByOrderId(orderId);
-        order.setTransactionId(transactionId)
-                .setPayAmount(totalAmount)
-                .setPayTime(date)
-                .setOrderStatus(OrderStatusVO.COMPLETED.getCode())
-                .setPayStatus(PayStatusVO.SUCCESS.getCode());
-
-        int count = orderMapper.updateByPrimaryKeySelective(order);
-
-        return count == 1;
+        if(order== null)
+            throw  new ServiceException("订单不存在",new IllegalArgumentException());
+        synchronized (orderId.intern()) {
+            if (order.getOrderStatus() == OrderStatusVO.COMPLETED.getCode() && order.getPayStatus()==PayStatusVO.SUCCESS.getCode()) {
+                return true;
+            }
+            order.setTransactionId(transactionId)
+                    .setPayAmount(totalAmount)
+                    .setPayTime(date)
+                    .setOrderStatus(OrderStatusVO.COMPLETED.getCode())
+                    .setPayStatus(PayStatusVO.SUCCESS.getCode());
+            int  count = orderMapper.updateByPrimaryKeySelective(order);
+            return count == 1;
+        }
     }
 
     @Override
